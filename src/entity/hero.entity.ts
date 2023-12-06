@@ -20,4 +20,7 @@ export class Hero {
 
   @OneToMany(() => Power, (power) => power.hero, { onDelete: 'CASCADE' })
   powers: Power[];
+
+  @Column({ nullable: true })
+  image: string;
 }

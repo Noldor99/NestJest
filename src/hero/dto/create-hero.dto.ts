@@ -24,4 +24,12 @@ export class CreateHeroDto {
     description: 'The catch phrase of the superhero',
   })
   readonly catch_phrase: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Image of the device',
+    required: false,
+  })
+  image?: any;
 }

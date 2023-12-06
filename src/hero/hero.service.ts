@@ -5,22 +5,32 @@ import { ILike, Repository } from 'typeorm';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { FindAllWithPaginationDto } from './dto/findAllWithPagination.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class HeroService {
   constructor(
     @InjectRepository(Hero)
     private heroRepository: Repository<Hero>,
+    private fileService: FilesService,
   ) {}
 
-  async create(createHeroDto: CreateHeroDto): Promise<Hero> {
+  async create(createHeroDto: CreateHeroDto, image: any): Promise<Hero> {
     const { nickname, real_name, catch_phrase, origin_description } =
       createHeroDto;
+
+    let fileName = null;
+
+    if (image) {
+      fileName = await this.fileService.createFile(image);
+    }
+
     const hero = this.heroRepository.create({
       nickname,
       real_name,
       catch_phrase,
       origin_description,
+      image: fileName,
     });
 
     return await this.heroRepository.save(hero);

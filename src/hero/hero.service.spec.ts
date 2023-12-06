@@ -6,10 +6,12 @@ import { Hero } from '../entity/hero.entity';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { NotFoundException } from '@nestjs/common';
 import { FindAllWithPaginationDto } from './dto/findAllWithPagination.dto';
+import { FilesService } from '../files/files.service';
 
 describe('HeroService', () => {
   let heroService: HeroService;
   let heroRepository: Repository<Hero>;
+  let filesService: FilesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,11 +21,13 @@ describe('HeroService', () => {
           provide: getRepositoryToken(Hero),
           useClass: Repository,
         },
+        FilesService,
       ],
     }).compile();
 
     heroService = module.get<HeroService>(HeroService);
     heroRepository = module.get<Repository<Hero>>(getRepositoryToken(Hero));
+    filesService = module.get<FilesService>(FilesService);
   });
 
   const createHeroDto: CreateHeroDto = {
@@ -31,6 +35,7 @@ describe('HeroService', () => {
     real_name: 'John Doe',
     origin_description: 'From a mysterious place',
     catch_phrase: 'I am a hero!',
+    image: null,
   };
 
   const createdHero = new Hero();
@@ -45,6 +50,7 @@ describe('HeroService', () => {
       real_name: 'Clark Kent',
       origin_description: 'Krypton',
       catch_phrase: 'Truth, Justice, and the American Way',
+      image: null,
       powers: [],
     },
     {
@@ -53,6 +59,7 @@ describe('HeroService', () => {
       real_name: 'Kara Zor-El',
       origin_description: 'Krypton',
       catch_phrase: 'Hope, Help, and Compassion for All',
+      image: null,
       powers: [],
     },
   ];
@@ -61,7 +68,7 @@ describe('HeroService', () => {
     jest.spyOn(heroRepository, 'create').mockReturnValueOnce(createdHero);
     jest.spyOn(heroRepository, 'save').mockResolvedValueOnce(createdHero);
 
-    const result = await heroService.create(createHeroDto);
+    const result = await heroService.create(createHeroDto, null);
 
     expect(heroRepository.create).toHaveBeenCalledWith(createHeroDto);
     expect(heroRepository.save).toHaveBeenCalledWith(createdHero);

@@ -7,12 +7,15 @@ import {
   Delete,
   Query,
   Put,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { HeroService } from './hero.service';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FindAllWithPaginationDto } from './dto/findAllWithPagination.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('hero')
 @Controller('hero')
@@ -20,8 +23,10 @@ export class HeroController {
   constructor(private readonly heroService: HeroService) {}
 
   @Post()
-  create(@Body() createHeroDto: CreateHeroDto) {
-    return this.heroService.create(createHeroDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  create(@Body() createHeroDto: CreateHeroDto, @UploadedFile() image) {
+    return this.heroService.create(createHeroDto, image);
   }
 
   @Get('pagination')
