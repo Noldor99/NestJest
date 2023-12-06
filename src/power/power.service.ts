@@ -12,9 +12,10 @@ export class PowerService {
   ) {}
 
   async addPower(dto: CreatePowerDto): Promise<Power> {
-    const { power } = dto;
+    const { heroId, power } = dto;
     const addPower = this.powerRepository.create({
       power,
+      hero: { id: heroId },
     });
 
     await this.powerRepository.save(addPower);

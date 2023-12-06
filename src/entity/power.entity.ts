@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Hero } from './hero.entity';
 
 @Entity()
 export class Power {
@@ -7,4 +8,7 @@ export class Power {
 
   @Column()
   power: string;
+
+  @ManyToOne(() => Hero, (hero) => hero.powers)
+  hero: Hero;
 }

@@ -5,4 +5,7 @@ export class CreatePowerDto {
     example: 'Strong',
   })
   power: string;
+
+  @ApiProperty()
+  heroId: number;
 }
